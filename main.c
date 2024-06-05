@@ -1,13 +1,6 @@
-#include <stdint.h>
-#include <pthread.h>
-#include <string.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
-#include <sys/poll.h>
-#include <sys/time.h>
 
 #include "server.h"
 #include "client.h"
@@ -27,7 +20,7 @@ int main(int argc, char** argv) {
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(4444);
     int opt;
-    while ((opt = getopt(argc, argv, "hlcp:a:d:n:")) != -1) {
+    while ((opt = getopt(argc, argv, "hlc:p:a:d:n:")) != -1) {
         switch (opt) {
             case 'l':
                 IS_SERVER = TRUE;
@@ -46,6 +39,7 @@ int main(int argc, char** argv) {
                 break;
             case 'n':
                 NAME = optarg;
+                break;
             case 'h':
             default:
                 print_help(argv[0]);
@@ -58,7 +52,6 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    pthread_t net_thread;
     switch (IS_SERVER) {
         case TRUE:  // server
             if (server_main(addr)) return 1;
@@ -68,8 +61,6 @@ int main(int argc, char** argv) {
             break;
     }
 
-    pthread_t keyboard_thread;
-    //pthread_create(&keyboard_thread, NULL, keyboard_handler, NULL);
-    //render();
+    render();
     return 0;
 }
